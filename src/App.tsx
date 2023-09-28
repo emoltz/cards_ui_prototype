@@ -8,9 +8,16 @@ function App(): ReactNode {
     const [playingCards, setPlayingCards] = useState<PlayingCardData[]>(cards);
     const [chosenCard, setChosenCard] = useState<PlayingCardData | null>(null);
     const topCard = playingCards[0];
-    // const secondCard = playingCards[1];
+    const secondCard = playingCards[1];
+
+     const [isDragging, setIsDragging] = useState<boolean>(false);
+
+    const handleDragStart = () => {
+        setIsDragging(true);
+    };
+
     const handleDragDrop = (results: DropResult) => {
-        console.log(results)
+        setIsDragging(false);
         const {source, destination} = results;
 
         // If nothing changes
@@ -40,6 +47,7 @@ function App(): ReactNode {
         <>
             <DragDropContext
                 onDragEnd={handleDragDrop}
+                onDragStart={handleDragStart}
             >
                 <div className={"text-2xl"}>
                     Card Deck
@@ -56,6 +64,9 @@ function App(): ReactNode {
                                 {...provided.droppableProps}
                                 ref={provided.innerRef}
                             >
+                                {isDragging &&
+                                <PlayingCard text={secondCard.text}  />
+                                }
 
                                 <Draggable
                                     draggableId={topCard.id}
