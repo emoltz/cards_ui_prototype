@@ -74,3 +74,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.card-shadow{
+      box-shadow: -5px 5px 6px rgba(0, 0, 0, 0.5);
+
+}

@@ -1,16 +1,15 @@
 
-interface PlayingCardProps {
-    isDragging: boolean;
-    text: string;
-}
-
-export default function PlayingCard({ isDragging, text }: PlayingCardProps) {
+export default function PlayingCard() {
 
 
     return (
-        <>
-            {isDragging && "👆"}
-            {text}
-        </>
+
+        <div
+            className={"bg-gray-200 p-4 rounded-lg card-shadow w-[212px] h-[302px]"}
+
+        >
+            Card1
+
+        </div>
     );
 }

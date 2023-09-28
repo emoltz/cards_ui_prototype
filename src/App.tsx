@@ -1,17 +1,74 @@
 import './App.css'
-import PlayingCard from "@/components/PlayingCard.tsx";
+import {DragDropContext, Droppable, Draggable, DropResult} from 'react-beautiful-dnd';
+import {useState} from "react";
+import {cards, PlayingCard} from "@/lib/sample-data/cardData.ts";
 
 function App() {
+    const [playingCards, setPlayingCards] = useState<PlayingCard[]>(cards);
+    const handleDragDrop = (results: DropResult) => {
+        const {source, destination} = results;
 
+        // If nothing changes
+        if (!destination) return;
+        if (source.droppableId === destination.droppableId && source.index === destination.index) {
+            return;
+        }
+
+        // otherwise, update state
+        const reorderedCards = [...playingCards];
+
+        const sourceIndex = source.index;
+        const [removedCard] = reorderedCards.splice(sourceIndex, 1);
+        const destinationIndex = destination.index;
+        reorderedCards.splice(destinationIndex, 0, removedCard);
+        return setPlayingCards(reorderedCards);
+
+    }
     return (
         <>
+            <DragDropContext
+                onDragEnd={handleDragDrop}
+            >
 
+                <div className={"text-2xl"}>
+                    Card Deck
+                </div>
 
-            <PlayingCard
-                isDragging={false}
-                text={"Hello World"}
+                <Droppable
+                    droppableId="DECK"
+                    type={"stack"}
+                >
+                    {(provided) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            {playingCards.map((card, index) => (
+                                <Draggable
+                                    draggableId={card.id}
+                                    key={card.id}
+                                    index={index}
+                                >
+                                    {(provided) => (
+                                        <div
+                                            className={""}
+                                            {...provided.dragHandleProps}
+                                            {...provided.draggableProps}
+                                            ref={provided.innerRef}
+                                        >
+                                            {card.text}
 
-            />
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+
+            </DragDropContext>
+
         </>
 
     )
