@@ -6,7 +6,10 @@ import PlayingCard from "@/components/PlayingCard.tsx";
 
 function App(): ReactNode {
     const [playingCards, setPlayingCards] = useState<PlayingCardData[]>(cards);
+    const [chosenCard, setChosenCard] = useState<PlayingCardData | null>(null);
+    const topCard = playingCards[0];
     const handleDragDrop = (results: DropResult) => {
+        console.log(results)
         const {source, destination} = results;
 
         // If nothing changes
@@ -14,37 +17,45 @@ function App(): ReactNode {
         if (source.droppableId === destination.droppableId && source.index === destination.index) {
             return;
         }
+        if (playingCards.length === 1) return;
 
-        // otherwise, update state
-        const reorderedCards: PlayingCardData[] = [...playingCards];
+        // If a card is dragged from the "DECK" to the "SPOT"
+        if (source.droppableId === "DECK" && destination.droppableId === "SPOT") {
+            setChosenCard(topCard);
+            setPlayingCards(prevCards => prevCards.slice(1));
+        }
 
-        const sourceIndex = source.index;
-        const [removedCard] = reorderedCards.splice(sourceIndex, 1);
-        const destinationIndex = destination.index;
-        reorderedCards.splice(destinationIndex, 0, removedCard);
-        return setPlayingCards(reorderedCards);
+        // If a card is dragged out of the "SPOT" and back to the "DECK"
+        if (source.droppableId === "SPOT" && destination.droppableId === "DECK") {
+            if (chosenCard) {
+                setPlayingCards(prevCards => [chosenCard, ...prevCards]);
+                setChosenCard(null);
+            }
+        }
 
     }
-    const topCard = playingCards[0];
+
     return (
         <>
             <DragDropContext
                 onDragEnd={handleDragDrop}
             >
-
                 <div className={"text-2xl"}>
                     Card Deck
                 </div>
+                <div className={"flex gap-10"}>
 
-                <Droppable
-                    droppableId="DECK"
-                    type={"stack"}
-                >
-                    {(provided) => (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                        >
+
+                    {/*DECL*/}
+                    <Droppable
+
+                        droppableId="DECK"
+                    >
+                        {(provided) => (
+                            <div
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                            >
 
                                 <Draggable
                                     draggableId={topCard.id}
@@ -66,10 +77,28 @@ function App(): ReactNode {
                                     )}
                                 </Draggable>
 
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                    {/*    SPOT*/}
+
+                    <div>
+                        <Droppable droppableId={"SPOT"}>
+                            {(provided) => (
+                                <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                    className={"border-2 border-dashed w-[212px] h-[302px]"}
+                                >
+                                    {chosenCard && <PlayingCard text={chosenCard.text}/>}
+                                    {provided.placeholder}
+
+                                </div>
+                            )}
+                        </Droppable>
+                    </div>
+                </div>
 
             </DragDropContext>
 
