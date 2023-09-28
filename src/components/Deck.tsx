@@ -11,16 +11,17 @@ interface DeckProps {
 
 export default function Deck({topCard, secondCard, isDragging, provided}: DeckProps) {
     return (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-            {isDragging && <PlayingCard text={secondCard.text} />}
+        <div {...provided.droppableProps} ref={provided.innerRef}>
+            {isDragging && <PlayingCard text={secondCard.text}/>}
             <Draggable draggableId={topCard.id} key={topCard.id} index={0}>
                 {(provided) => (
                     <div
                         {...provided.dragHandleProps}
                         {...provided.draggableProps}
                         ref={provided.innerRef}
+                        className={"pr-1"}
                     >
-                        <PlayingCard text={topCard.text} />
+                        <PlayingCard text={topCard.text}/>
                     </div>
                 )}
             </Draggable>

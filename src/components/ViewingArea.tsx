@@ -1,20 +1,37 @@
 import {PlayingCardData} from "@/lib/sample-data/cardData.ts";
-import {DroppableProvided} from "react-beautiful-dnd";
+import {Draggable, DroppableProvided} from "react-beautiful-dnd";
 import PlayingCard from "@/components/PlayingCard.tsx";
 
 interface ViewingAreaProps {
-    draggingCard: PlayingCardData | null;
+    viewingAreaCards: PlayingCardData[];
     provided: DroppableProvided;
 }
 
-export default function ViewingArea({draggingCard, provided}: ViewingAreaProps) {
+export default function ViewingArea({viewingAreaCards, provided}: ViewingAreaProps) {
     return (
         <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className={`border-2 border-dashed w-custom-card h-custom-card`}
+            className={`border-2 border-dashed w-[636px]  h-custom-card bg-gray-200 rounded-lg flex`}
         >
-            {draggingCard && <PlayingCard text={draggingCard.text}/>}
+            {viewingAreaCards.map((card, index) => (
+                <Draggable key={card.id} draggableId={card.id} index={index}
+                >
+                    {(provided) => (
+                        <div
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                            className={"pr-1"}
+                        >
+                            <PlayingCard text={card.text}/>
+
+
+
+                        </div>
+                    )}
+                </Draggable>
+            ))}
             {provided.placeholder}
         </div>
     )

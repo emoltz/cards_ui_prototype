@@ -8,6 +8,7 @@ import ViewingArea from "@/components/ViewingArea.tsx";
 function App(): ReactNode {
     const [playingCards, setPlayingCards] = useState<PlayingCardData[]>(cards);
     const [draggingCard, setDraggingCard] = useState<PlayingCardData | null>(null);
+    const [viewingAreaCards, setViewingAreaCards] = useState<PlayingCardData[]>([]);
     const topCard = playingCards[0];
     const secondCard = playingCards[1];
 
@@ -19,7 +20,7 @@ function App(): ReactNode {
 
 
     // IDs
-    const viewingArea: string = "VIEWING AREA";
+    const viewingAreaId: string = "VIEWING AREA";
 
     // FUNCTIONS
     const handleDragDrop = (results: DropResult) => {
@@ -33,20 +34,27 @@ function App(): ReactNode {
         }
         if (playingCards.length === 1) return;
 
-        // If a card is dragged from the "DECK" to the "SPOT"
-        if (source.droppableId === "DECK" && destination.droppableId === viewingArea) {
+        // If a card is dragged from the "DECK" to the "VIEWING AREA"
+        if (source.droppableId === "DECK" && destination.droppableId === viewingAreaId) {
             setDraggingCard(topCard);
+            setViewingAreaCards(prevCards => [...prevCards, topCard]);
             setPlayingCards(prevCards => prevCards.slice(1));
         }
 
         // If a card is dragged out of the "SPOT" and back to the "DECK"
-        if (source.droppableId === viewingArea && destination.droppableId === "DECK") {
+        if (source.droppableId === viewingAreaId && destination.droppableId === "DECK") {
             if (draggingCard) {
                 setPlayingCards(prevCards => [draggingCard, ...prevCards]);
                 setDraggingCard(null);
             }
         }
 
+        if (source.droppableId === viewingAreaId && destination.droppableId === viewingAreaId) {
+            const reorderedCards = Array.from(viewingAreaCards);
+            const [movedCard] = reorderedCards.splice(source.index, 1);
+            reorderedCards.splice(destination.index, 0, movedCard);
+            setViewingAreaCards(reorderedCards);
+        }
     }
 
     return (
@@ -59,27 +67,36 @@ function App(): ReactNode {
                     Card Deck
                 </div>
                 <div className={"flex gap-10"}>
+                    <div className="p-2">
 
-                    {/*DECK*/}
-                    <Droppable
-                        droppableId="DECK"
-                    >
-                        {(provided) => (
-                            <Deck
-                                topCard={topCard}
-                                secondCard={secondCard}
-                                isDragging={isDragging}
-                                provided={provided}
-                            />
-                        )}
-                    </Droppable>
-
-
-                    {/*    VIEWING AREA*/}
-                    <div>
-                        <Droppable droppableId={viewingArea}>
+                        {/*DECK*/}
+                        <Droppable
+                            droppableId="DECK"
+                        >
                             {(provided) => (
-                                <ViewingArea draggingCard={draggingCard} provided={provided}/>
+                                <Deck
+                                    topCard={topCard}
+                                    secondCard={secondCard}
+                                    isDragging={isDragging}
+                                    provided={provided}
+                                />
+                            )}
+                        </Droppable>
+
+                    </div>
+                    {/*    VIEWING AREA*/}
+                    <div
+                        className={"p-2"}
+                    >
+                        <Droppable
+                            droppableId={viewingAreaId}
+                            // type={"list"}
+                            direction={"horizontal"}
+                        >
+                            {(provided) => (
+                                <ViewingArea
+                                    viewingAreaCards={viewingAreaCards}
+                                    provided={provided}/>
                             )}
                         </Droppable>
                     </div>
