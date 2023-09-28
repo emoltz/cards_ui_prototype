@@ -3,6 +3,7 @@ import {DragDropContext, Droppable, Draggable, DropResult} from 'react-beautiful
 import {ReactNode, useState} from "react";
 import {cards, PlayingCardData} from "@/lib/sample-data/cardData.ts";
 import PlayingCard from "@/components/PlayingCard.tsx";
+import {cardDimensions} from "@/lib/dimensions.ts";
 
 function App(): ReactNode {
     const [playingCards, setPlayingCards] = useState<PlayingCardData[]>(cards);
@@ -89,7 +90,7 @@ function App(): ReactNode {
                                 <div
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    className={"border-2 border-dashed w-[212px] h-[300px]"}
+                                    className={`border-2 border-dashed w-[${cardDimensions.width}] h-[${cardDimensions.height}]`}
                                 >
                                     {chosenCard && <PlayingCard text={chosenCard.text}/>}
                                     {provided.placeholder}
