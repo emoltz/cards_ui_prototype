@@ -1,21 +1,27 @@
 import './App.css'
-import {DragDropContext, Droppable, Draggable, DropResult} from 'react-beautiful-dnd';
+import {DragDropContext, Droppable, DropResult} from 'react-beautiful-dnd';
 import {ReactNode, useState} from "react";
 import {cards, PlayingCardData} from "@/lib/sample-data/cardData.ts";
-import PlayingCard from "@/components/PlayingCard.tsx";
+import Deck from "@/components/Deck.tsx";
+import ViewingArea from "@/components/ViewingArea.tsx";
 
 function App(): ReactNode {
     const [playingCards, setPlayingCards] = useState<PlayingCardData[]>(cards);
-    const [chosenCard, setChosenCard] = useState<PlayingCardData | null>(null);
+    const [draggingCard, setDraggingCard] = useState<PlayingCardData | null>(null);
     const topCard = playingCards[0];
     const secondCard = playingCards[1];
 
-     const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
 
     const handleDragStart = () => {
         setIsDragging(true);
     };
 
+
+    // IDs
+    const viewingArea: string = "VIEWING AREA";
+
+    // FUNCTIONS
     const handleDragDrop = (results: DropResult) => {
         setIsDragging(false);
         const {source, destination} = results;
@@ -28,16 +34,16 @@ function App(): ReactNode {
         if (playingCards.length === 1) return;
 
         // If a card is dragged from the "DECK" to the "SPOT"
-        if (source.droppableId === "DECK" && destination.droppableId === "SPOT") {
-            setChosenCard(topCard);
+        if (source.droppableId === "DECK" && destination.droppableId === viewingArea) {
+            setDraggingCard(topCard);
             setPlayingCards(prevCards => prevCards.slice(1));
         }
 
         // If a card is dragged out of the "SPOT" and back to the "DECK"
-        if (source.droppableId === "SPOT" && destination.droppableId === "DECK") {
-            if (chosenCard) {
-                setPlayingCards(prevCards => [chosenCard, ...prevCards]);
-                setChosenCard(null);
+        if (source.droppableId === viewingArea && destination.droppableId === "DECK") {
+            if (draggingCard) {
+                setPlayingCards(prevCards => [draggingCard, ...prevCards]);
+                setDraggingCard(null);
             }
         }
 
@@ -54,65 +60,26 @@ function App(): ReactNode {
                 </div>
                 <div className={"flex gap-10"}>
 
-
                     {/*DECK*/}
                     <Droppable
                         droppableId="DECK"
                     >
                         {(provided) => (
-                            <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                            >
-                                {isDragging &&
-                                <PlayingCard text={secondCard.text}  />
-                                }
-
-                                <Draggable
-                                    draggableId={topCard.id}
-                                    key={topCard.id}
-                                    index={0}
-                                >
-                                    {(provided) => (
-
-                                        <div
-                                            className={" "}
-                                            {...provided.dragHandleProps}
-                                            {...provided.draggableProps}
-                                            ref={provided.innerRef}
-                                        >
-
-
-                                            {/*Top card*/}
-                                            <div className="">
-                                                <PlayingCard
-                                                    text={topCard.text}
-                                                />
-                                            </div>
-
-
-                                        </div>
-                                    )}
-                                </Draggable>
-
-                                {provided.placeholder}
-                            </div>
+                            <Deck
+                                topCard={topCard}
+                                secondCard={secondCard}
+                                isDragging={isDragging}
+                                provided={provided}
+                            />
                         )}
                     </Droppable>
-                    {/*    SPOT*/}
 
+
+                    {/*    VIEWING AREA*/}
                     <div>
-                        <Droppable droppableId={"SPOT"}>
+                        <Droppable droppableId={viewingArea}>
                             {(provided) => (
-                                <div
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                    className={`border-2 border-dashed w-custom-card h-custom-card`}
-                                >
-                                    {chosenCard && <PlayingCard text={chosenCard.text}/>}
-                                    {provided.placeholder}
-
-                                </div>
+                                <ViewingArea draggingCard={draggingCard} provided={provided}/>
                             )}
                         </Droppable>
                     </div>
