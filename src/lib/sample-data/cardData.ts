@@ -1,9 +1,9 @@
-export type PlayingCard = {
+export type PlayingCardData = {
     id: string;
     text: string;
 }
 
-export const cards: PlayingCard[] = [
+export const cards: PlayingCardData[] = [
     {
         id: "1",
         text: "Scientist"
