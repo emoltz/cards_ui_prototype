@@ -8,6 +8,7 @@ function App(): ReactNode {
     const [playingCards, setPlayingCards] = useState<PlayingCardData[]>(cards);
     const [chosenCard, setChosenCard] = useState<PlayingCardData | null>(null);
     const topCard = playingCards[0];
+    // const secondCard = playingCards[1];
     const handleDragDrop = (results: DropResult) => {
         console.log(results)
         const {source, destination} = results;
@@ -46,9 +47,8 @@ function App(): ReactNode {
                 <div className={"flex gap-10"}>
 
 
-                    {/*DECL*/}
+                    {/*DECK*/}
                     <Droppable
-
                         droppableId="DECK"
                     >
                         {(provided) => (
@@ -63,15 +63,22 @@ function App(): ReactNode {
                                     index={0}
                                 >
                                     {(provided) => (
+
                                         <div
-                                            className={""}
+                                            className={" "}
                                             {...provided.dragHandleProps}
                                             {...provided.draggableProps}
                                             ref={provided.innerRef}
                                         >
-                                            <PlayingCard
-                                                text={topCard.text}
-                                            />
+
+
+                                            {/*Top card*/}
+                                            <div className="">
+                                                <PlayingCard
+                                                    text={topCard.text}
+                                                />
+                                            </div>
+
 
                                         </div>
                                     )}
