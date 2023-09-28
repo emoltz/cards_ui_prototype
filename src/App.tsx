@@ -1,5 +1,5 @@
 import './App.css'
-import {DragDropContext, Droppable, DropResult} from 'react-beautiful-dnd';
+import {DragDropContext, DragStart, Droppable, DropResult} from 'react-beautiful-dnd';
 import {ReactNode, useState} from "react";
 import {cards, PlayingCardData} from "@/lib/sample-data/cardData.ts";
 import Deck from "@/components/Deck.tsx";
@@ -14,8 +14,10 @@ function App(): ReactNode {
 
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
-    const handleDragStart = () => {
+    const handleDragStart = (start: DragStart) => {
+        if (start.source.droppableId === "DECK") {
         setIsDragging(true);
+    }
     };
 
 
