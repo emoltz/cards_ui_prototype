@@ -1,9 +1,9 @@
 import './App.css'
 import {DragDropContext, Droppable, Draggable, DropResult} from 'react-beautiful-dnd';
-import {useState} from "react";
+import {ReactNode, useState} from "react";
 import {cards, PlayingCard} from "@/lib/sample-data/cardData.ts";
 
-function App() {
+function App(): ReactNode {
     const [playingCards, setPlayingCards] = useState<PlayingCard[]>(cards);
     const handleDragDrop = (results: DropResult) => {
         const {source, destination} = results;
@@ -15,7 +15,7 @@ function App() {
         }
 
         // otherwise, update state
-        const reorderedCards = [...playingCards];
+        const reorderedCards: PlayingCard[] = [...playingCards];
 
         const sourceIndex = source.index;
         const [removedCard] = reorderedCards.splice(sourceIndex, 1);
