@@ -25,6 +25,7 @@ function App(): ReactNode {
         return setPlayingCards(reorderedCards);
 
     }
+    const topCard = playingCards[0];
     return (
         <>
             <DragDropContext
@@ -44,11 +45,11 @@ function App(): ReactNode {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
-                            {playingCards.map((card, index) => (
+
                                 <Draggable
-                                    draggableId={card.id}
-                                    key={card.id}
-                                    index={index}
+                                    draggableId={topCard.id}
+                                    key={topCard.id}
+                                    index={0}
                                 >
                                     {(provided) => (
                                         <div
@@ -58,13 +59,13 @@ function App(): ReactNode {
                                             ref={provided.innerRef}
                                         >
                                             <PlayingCard
-                                                text={card.text}
+                                                text={topCard.text}
                                             />
 
                                         </div>
                                     )}
                                 </Draggable>
-                            ))}
+
                             {provided.placeholder}
                         </div>
                     )}

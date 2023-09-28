@@ -11,5 +11,13 @@ export const cards: PlayingCardData[] = [
     {
         id: "2",
         text: "Engineer"
+    },
+    {
+        id: "3",
+        text: "Computer Scientist"
+    },
+    {
+        id: "4",
+        text: "Teacher"
     }
 ]
