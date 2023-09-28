@@ -64,7 +64,7 @@ function App(): ReactNode {
                                 >
                                     {(provided) => (
                                         <div
-                                            className={"p-2"}
+                                            className={""}
                                             {...provided.dragHandleProps}
                                             {...provided.draggableProps}
                                             ref={provided.innerRef}
@@ -89,7 +89,7 @@ function App(): ReactNode {
                                 <div
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    className={"border-2 border-dashed w-[212px] h-[302px]"}
+                                    className={"border-2 border-dashed w-[212px] h-[300px]"}
                                 >
                                     {chosenCard && <PlayingCard text={chosenCard.text}/>}
                                     {provided.placeholder}
